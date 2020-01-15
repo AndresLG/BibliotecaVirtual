@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+        <ui:composition template="./../template/template.xhtml">
+            <ui:define name="content">
+                <h:form id="FormTblGenero">
+                    <p:growl autoUpdate="true" life="1000"/>
+                    <p:dataTable id="tblGenero"  
+                                 value="#{generoC.lstGenero}"
+                                 var="genero"
+                                 selectionMode="single"
+                                 selection="#{generoC.selectedGenero}"
+                                 rowKey="#{genero.CODGEN}"
+                                 rows="10" paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {PageLinks} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15" reflow="true">
+                        <f:facet name="header">
+                            <p:commandButton icon="fa fa-plus" value="Nuevo Genero" onclick="PF('dlgNewGenero').show();" class="secondary-btn"/>
+                        </f:facet>
+                        <p:column headerText="Género">
+                            <p:outputLabel  value="#{genero.NOMGEN}"/>
+                        </p:column>
+                    </p:dataTable>
+                    <p:contextMenu for="tblGenero">
+                        <p:menuitem icon="fa fa-edit" value="Modificar"   onclick="PF('dlgModGenero').show();" update="FormModGenero"/>
+                        <p:menuitem icon="fa fa-trash" value="Eliminar" actionListener="#{generoC.eliminar()}"  update="tblGenero">
+                            <p:confirm header="Confirmación"   message="¿Estás seguro de Eliminar?" icon="ui-icon-alert"/>
+                        </p:menuitem>
+                    </p:contextMenu>
+                </h:form>
+
+                <h:form>
+                    <p:confirmDialog global="true">
+                        <p:commandButton value="Si" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                        <p:commandButton value="No" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+                    </p:confirmDialog>
+                </h:form>
+                <p:dialog  id="dialogo" header="Actualizar Datos" widgetVar="dlgModGenero" resizable="false"  modal="true">
+                    <h:form id="FormModGenero">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel  value="Género:"/>
+                            <p:inputText value="#{generoC.selectedGenero.NOMGEN}" placeholder="Género" maxlength="30">
+                                <p:keyFilter regEx="/[a-z_ á_é_í_ó_ú]/i"/>
+                            </p:inputText>
+                            <p:commandButton icon="fa fa-edit" value="Modificar" actionListener="#{generoC.modificar()}" update=":FormTblGenero:tblGenero"  onclick="PF('dlgModGenero').hide();"/>
+                            <p:commandButton icon="fa fa-close" value="Cancelar"  onclick="PF('dlgModGenero').hide();"/>
+                        </p:panelGrid>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dlg" header="Agregar Género"  widgetVar="dlgNewGenero" resizable="false" modal="true">
+                    <h:form id="FormGenero"> 
+                        <p:panelGrid   columns="2">
+                            <p:outputLabel  value="Genero:"/>
+                            <p:inputText value="#{generoC.genero.NOMGEN}" placeholder="Genero" maxlength="30" required="#{not empty param[registrar.clientId]}" requiredMessage="INGRESE EL NOMBRE">
+                                <p:keyFilter regEx="/[a-z_ á_é_í_ó_ú]/i"/>
+                            </p:inputText>
+                            <p:commandButton binding="#{registrar}" icon="fa fa-save" value="Guardar" actionListener="#{generoC.guardar()}"  update="FormGenero :FormTblGenero:tblGenero"/>
+                            <p:commandButton icon="fa fa-close" value="Cancelar" actionListener="#{generoC.limpiar()}" update="FormGenero" onclick="PF('dlgNewGenero').hide();"/>
+                        </p:panelGrid>
+                    </h:form>
+                </p:dialog>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

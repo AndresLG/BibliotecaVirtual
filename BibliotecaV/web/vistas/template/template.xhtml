@@ -1,0 +1,224 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <f:event type="preRenderView" listener="#{personaC.seguridadSesion()}"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+        <link rel="shortcut icon" href="../../Images/book.png" />
+        <h:outputStylesheet library="css" name="theme.css"/>
+        <h:outputStylesheet library="css" name="layout-blue.css"/>
+        <h:outputStylesheet library="css" name="nanoscroller.css"/>
+        <title>Biblioteca Virtual</title>
+    </h:head>
+
+    <h:body class="main-body">
+        <div class="layout-wrapper">
+            <div class="layout-topbar">
+                <h:link outcome="/vistas/dashboard/dashboard" class="logo">
+                    <span style="color: #fff;font-size: 2em;">Biblioteca Virtual</span>
+                </h:link>
+                <a id="menu-button" href="#">
+                    <i class="fa fa-align-left"></i>
+                </a>
+                <a id="right-sidebar-button" href="#">
+                    <i class="fa fa-ellipsis-v"></i>
+                </a>
+            </div>
+
+            <div class="layout-sidebar">
+                <div id="nano-container" class="nano">
+                    <div class="nano-content sidebar-scroll-content">
+                        <div class="user-profile">
+                            <a id="sidebar-profile-button" href="#">
+                                <img id="j_idt39" src="../../resources/images/avatar.png" alt=""/>
+                                <span class="sidebar-profile-name">#{personaC.persona.NOMPER}</span>
+                                <span class="sidebar-profile-role">#{personaC.persona.TIPPER}</span>
+                            </a>
+                            <ul id="sidebar-usermenu" class="usermenu">
+                                <li>
+                                    <a href="#">
+                                        <i class="fa fa-fw fa-user"></i>
+                                        <span class="topbar-item-name">Perfil</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <h:form>
+                                        <p:commandLink actionListener="#{personaC.cerrarSesion()}">
+                                            <i class="fa fa-fw fa-power-off"></i>
+                                            <span class="topbar-item-name">Cerrar sesión</span>
+                                        </p:commandLink>
+                                    </h:form>
+                                </li>
+                            </ul>
+                        </div>
+
+
+                        <h:form id="menuform" >
+                            <input type="hidden" name="menuform" value="menuform" />
+                            <ul id="desplegable" class="layout-menu">
+                                <li id="menuform:om_dashboard" role="menuitem">
+                                    <a href="../dashboard/dashboard.xhtml">
+                                        <i class="fa fa-fw  fa-home"></i>
+                                        <span>Dashboard</span>
+                                    </a>
+                                </li>
+
+                                <li id="menuform:om_customization1" role="menuitem" class="ui-menuitem-submenu">
+                                    <a>
+                                        <i class="fa fa-fw fa-bars"></i>
+                                        <span>Maestras</span>
+                                        <i class="layout-menuitem-toggler fa fa-fw fa-angle-down"></i>
+                                    </a>
+                                    <ul role="menu">
+                                        <p:panelGrid>
+                                            <li id="menuform:custom1" role="menuitem">
+                                                <a href="../libro/libro.xhtml" >
+                                                    <i class="fa fa-fw fa-book"></i>
+                                                    <span>Libro</span>
+                                                </a>
+                                            </li>
+                                        </p:panelGrid>
+                                        <p:panelGrid rendered="#{personaC.persona.TIPPER == 'AD'}">
+                                            <li id="menuform:custom2" role="menuitem">
+                                                <a href="../autor/autor.xhtml" >
+                                                    <i class="fa fa-fw fa-user"></i>
+                                                    <span>Autor</span>
+                                                </a>
+                                            </li>
+                                        </p:panelGrid>
+                                        <p:panelGrid rendered="#{personaC.persona.TIPPER == 'AD'}">
+                                            <li id="menuform:custom10" role="menuitem">
+                                                <a href="../lector/lector.xhtml" >
+                                                    <i class="fa fa-fw fa-eye"></i>
+                                                    <span>Lector</span>
+                                                </a>
+                                            </li>
+                                        </p:panelGrid>
+                                        <p:panelGrid rendered="#{personaC.persona.TIPPER == 'AD'}">
+                                            <li id="menuform:custom3" role="menuitem">
+                                                <a href="../genero/genero.xhtml" >
+                                                    <i class="fa fa-fw fa-bookmark"></i>
+                                                    <span>Género</span>
+                                                </a>
+                                            </li>
+                                        </p:panelGrid>
+                                        <p:panelGrid rendered="#{personaC.persona.TIPPER == 'AD'}">
+                                            <li id="menuform:custom4" role="menuitem">
+                                                <a href="../anaquel/anaquel.xhtml" >
+                                                    <i class="fa fa-fw fa-th-list"></i>
+                                                    <span>Anaquel</span>
+                                                </a>
+                                            </li>
+                                        </p:panelGrid>
+                                        <p:panelGrid rendered="#{personaC.persona.TIPPER == 'AD'}">
+                                            <li id="menuform:custom5" role="menuitem">
+                                                <a href="../editorial/editorial.xhtml" >
+                                                    <i class="fa fa-fw fa-print"></i>
+                                                    <span>Editorial</span>
+                                                </a>
+                                            </li>
+                                        </p:panelGrid>
+                                        <p:panelGrid rendered="#{personaC.persona.TIPPER == 'AD'}">
+                                            <li id="menuform:custom6" role="menuitem">
+                                                <a href="../tipoLibro/tipoLibro.xhtml" >
+                                                    <i class="fa fa-fw fa-tumblr-square"></i>
+                                                    <span>Tipo de Libro</span>
+                                                </a>
+                                            </li>
+                                        </p:panelGrid>
+                                    </ul>
+                                </li>
+                                <li id="menuform:om_customization2" role="menuitem" class="ui-menuitem-submenu">
+                                    <a>
+                                        <i class="fa fa-fw fa-bars"></i>
+                                        <span>Transaccionales</span>
+                                        <i class="layout-menuitem-toggler fa fa-fw fa-angle-down"></i>
+                                    </a>
+                                    <ul role="menu">
+                                        <p:panelGrid>
+                                            <li id="menuform:custom7" role="menuitem">
+                                                <a href="../prestamo/prestamo.xhtml" >
+                                                    <i class="fa fa-fw fa-briefcase"></i>
+                                                    <span>Préstamo</span>
+                                                </a>
+                                            </li>
+                                        </p:panelGrid>
+                                        <p:panelGrid>
+                                            <li id="menuform:custom8" role="menuitem">
+                                                <a href="../prestamo/prestamoDetalle.xhtml" >
+                                                    <i class="fa fa-fw fa-list-alt"></i>
+                                                    <span>Detalle</span>
+                                                </a>
+                                            </li>
+                                        </p:panelGrid>
+                                        <p:panelGrid>
+                                            <li id="menuform:custom9" role="menuitem">
+                                                <a href="../prestamo/prestamosFisico.xhtml">
+                                                    <i class="fa fa-fw fa-clipboard"></i>
+                                                    <span>Físico</span>
+                                                </a>
+                                            </li>
+                                        </p:panelGrid>
+                                        <p:panelGrid>
+                                            <li id="menuform:custom10" role="menuitem">
+                                                <a href="../Prestamo_Devolucion/prestamo_devolucion.xhtml">
+                                                    <i class="fa fa-fw fa-list-alt"></i>
+                                                    <span>Prestamo_Devolucion</span>
+                                                </a>
+                                            </li>
+                                        </p:panelGrid>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layout-main">
+                <div class="layout-main-content">
+                    <div class="ui-g">
+                        <div class="ui-g-12">
+                            <div class="card">
+                                <ui:insert name="content">
+                                </ui:insert>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layout-footer ui-g-12">
+                    <div class="ui-g-12 ui-md-6 footer-right">
+                        <a href="#">
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                        <a href="#">
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h:outputScript library="primefaces" name="jquery/jquery.js" target="head" />
+        <h:outputScript library="primefaces" name="jquery/jquery-plugins.js" target="head" />
+        <h:outputScript library="js" name="layout.js" target="head" />
+        <h:outputScript library="js" name="nanoscroller.js" target="head" />
+        <h:outputScript library="js" name="JsfCrud.js" />
+        <script>
+            PrimeFaces.cw("California", "me", {
+                id: "desplegable"
+            });
+        </script>
+    </h:body>
+
+</html>

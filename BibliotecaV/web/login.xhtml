@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <f:event type="preRenderView" listener="#{personaC.seguridadLogin()}"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+        <link rel="shortcut icon" href="Images/book.png" />
+        <h:outputStylesheet library="css" name="theme.css"/>
+        <h:outputStylesheet library="css" name="layout-blue.css"/>
+        <title>Biblioteca | Login</title>
+    </h:head>
+    <h:body class="login-body">
+        <h:form id="form">
+            <p:growl id="msg" life="1500" autoUpdate="true"/>
+            <div class="login-panel ui-fluid">
+                <p:panel rendered="#{LoginC.intentos >= 3 ? false:true}">
+                    <div class="ui-g">
+                        <div class="ui-g-12 ui-lg-12 ui-md-12">
+                            <span class="login-summary">Biblioteca Virtual</span>
+                        </div>
+                        <div class="ui-g-12 ui-lg-12 ui-md-12">
+                            Usuario:
+                            <p:inputText value="#{personaC.user}" placeholder="Usuario" disabled="#{personaC.intentos le 2 ? false:true}" class="ui-inputfield ui-inputtext ui-widget ui-state-default ui-corner-all"/>
+                        </div>
+                        <div class="ui-g-12 ui-lg-12 ui-md-12">
+                            Clave:
+                            <p:password value="#{personaC.pass}" placeholder="Clave" disabled="#{personaC.intentos le 2 ? false:true}" class="ui-inputfield ui-password ui-widget ui-state-default ui-corner-all"/>
+                        </div>
+                        <div class="ui-g-12 ui-lg-12 ui-md-12 button-container">
+                            <p:commandButton value="Ingresar" actionListener="#{personaC.iniciarSesion()}" update="form" oncomplete="refresh();" disabled="#{personaC.intentos le 2 ? false:true}" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only turquoise-btn"/>
+                            <h:panelGroup rendered="#{personaC.intentos >= 3 ? true:false}">
+                                <h:outputText id="txt_count" value="#{personaC.numero}" />
+                                <p:poll interval="3" listener="#{personaC.incrementar}" update="form" oncomplete="refresh();" />
+                            </h:panelGroup>
+                            <p:remoteCommand name="refresh" update="form"/>
+                        </div>
+                    </div>
+                </p:panel>
+            </div>
+
+            <p:panel rendered="#{personaC.intentos >= 3 ? true:false}" id="basic" header="¿NECESITAS AYUDA?">
+                <h:panelGrid columns="1" cellpadding="10" >
+                    Correos y Números de Celular:<br/>
+                    <br/>
+                    dquispe@vallegrande.edu.pe - 961467972<br/>
+                    alopez@vallegrande.edu.pe - 976156469<br/>                                     
+                    zsalcedo@vallegrande.edu.pe - 982450329<br/>                                     
+                </h:panelGrid>
+            </p:panel>
+        </h:form>
+    </h:body>
+</html>
+

@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+        <ui:composition template="./../template/template.xhtml">
+            <ui:define name="content">
+                <h:form id="FormTblAutor">
+                    <p:growl autoUpdate="true" life="1000"/>
+                    <p:dataTable id="tblAutor"  
+                                 value="#{autorC.lstAutor}"
+                                 var="autor"
+                                 selectionMode="single"
+                                 selection="#{autorC.selectedAutor}"
+                                 rowKey="#{autor.CODAUT}"
+                                 rows="10" paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {PageLinks} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15" reflow="true">
+                        <f:facet name="header">
+                            <p:commandButton icon="fa fa-plus" value="Nuevo Autor" onclick="PF('dlgNewAutor').show();" actionListener="#{autorC.limpiar()}" class="secondary-btn"/>
+                            <center>
+                                <h:commandLink actionListener="#{prestamoC.descargarPdfAutores()}">
+                                    <p:graphicImage url="../../resources/images/pdf.png" width="60"/>
+                                    <br/>
+                                    <span style="color: black">REPORTE DE AUTOR</span>
+                                </h:commandLink>
+                            </center>
+                        </f:facet>
+                        <p:column headerText="Nombre">
+                            <p:outputLabel  value="#{autor.NOMAUT}"/>
+                        </p:column>
+                        <p:column headerText="Apellidos">
+                            <p:outputLabel   value="#{autor.APEAUT}"/>
+                        </p:column>
+                    </p:dataTable>
+                    <p:contextMenu for="tblAutor">
+                        <p:menuitem icon="fa fa-edit" value="Modificar"   onclick="PF('dlgModAutor').show();" update="FormDialog2"/>
+                        <p:menuitem icon="fa fa-trash" value="Eliminar" actionListener="#{autorC.eliminar()}"  update="tblAutor :FormAutor">
+                            <p:confirm header="Confirmación"   message="¿Estás seguro de Eliminar?" icon="ui-icon-alert"/>
+                        </p:menuitem>
+                    </p:contextMenu>
+                </h:form>
+
+                <h:form>
+                    <p:confirmDialog global="true">
+                        <p:commandButton value="Si" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                        <p:commandButton value="No" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+                    </p:confirmDialog>
+                </h:form>
+                <p:dialog  id="dialogo" header="Actualizar Datos" widgetVar="dlgModAutor" resizable="false"  modal="true">
+                    <h:form id="FormDialog2">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel  value="Nombres:"/>
+                            <p:inputText value="#{autorC.selectedAutor.NOMAUT}" placeholder="Nombres" maxlength="30">
+                                <p:keyFilter regEx="/[a-z_ á_é_í_ó_ú]/i"/>
+                            </p:inputText>
+                            <p:outputLabel  value="Apellidos:"/>
+                            <p:inputText value="#{autorC.selectedAutor.APEAUT}" placeholder="Apellidos" maxlength="30">
+                                <p:keyFilter regEx="/[a-z_ á_é_í_ó_ú]/i"/>
+                            </p:inputText>
+                            <p:commandButton icon="fa fa-edit" value="Modificar" actionListener="#{autorC.modificar()}" update=":FormTblAutor:tblAutor"  onclick="PF('dlgModAutor').hide();"/>
+                            <p:commandButton icon="fa fa-close" value="Cancelar"  onclick="PF('dlgModAutor').hide();"/>
+                        </p:panelGrid>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dlg" header="Agregar Autor"  widgetVar="dlgNewAutor" resizable="false" modal="true">
+                    <h:form id="FormAutor"> 
+                        <p:panelGrid   columns="2">
+                            <p:outputLabel  value="Nombres:"/>
+                            <p:inputText value="#{autorC.autor.NOMAUT}" placeholder="Nombres" maxlength="30" required="#{not empty param[registrar.clientId]}" requiredMessage="INGRESE EL NOMBRE">
+                                <p:keyFilter regEx="/[a-z_ á_é_í_ó_ú]/i"/>
+                            </p:inputText>
+                            <p:outputLabel  value="Apellidos:"/>
+                            <p:inputText value="#{autorC.autor.APEAUT}" placeholder="Apellidos" maxlength="30" required="#{not empty param[registrar.clientId]}" requiredMessage="INGRESE EL APELLIDO">
+                                <p:keyFilter regEx="/[a-z_ á_é_í_ó_ú]/i"/>
+                            </p:inputText>
+                            <p:commandButton binding="#{registrar}" icon="fa fa-save" value="Guardar" actionListener="#{autorC.guardar()}"  update="FormAutor :FormTblAutor:tblAutor"/>
+                            <p:commandButton icon="fa fa-close" value="Cancelar" actionListener="#{autorC.limpiar()}" update="FormAutor" onclick="PF('dlgNewAutor').hide();"/>
+                        </p:panelGrid>
+                    </h:form>
+                </p:dialog>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

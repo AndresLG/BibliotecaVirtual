@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+        <ui:composition template="./../template/template.xhtml">
+            <ui:define name="content">
+                <h:form id="FormTblLector">
+                    <p:growl autoUpdate="true" life="1000"/>
+                    <p:dataTable id="tblLector"  
+                                 value="#{lectorC.lstLector}"
+                                 var="lector"
+                                 selectionMode="single"
+                                 selection="#{lectorC.selectedLector}"
+                                 rowKey="#{lector.CODLEC}"
+                                 rows="10" paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {PageLinks} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15" reflow="true">
+                        <p:column headerText="Nombre">
+                            <p:outputLabel  value="#{lector.NOMLEC}"/>
+                        </p:column>
+                        <p:column headerText="Apellidos">
+                            <p:outputLabel   value="#{lector.APELEC}"/>
+                        </p:column>
+                        <p:column headerText="Dni">
+                            <p:outputLabel  value="#{lector.DNILEC}"/>
+                        </p:column>
+                        <p:column headerText="Dirección">
+                            <p:outputLabel   value="#{lector.DIRLEC}"/>
+                        </p:column>
+                        <p:column headerText="Teléfono">
+                            <p:outputLabel  value="#{lector.TELFLEC}"/>
+                        </p:column>
+                        <p:column headerText="Email">
+                            <p:outputLabel  value="#{lector.EMALEC}"/>
+                        </p:column>
+                        <p:column headerText="Tipo">
+                            <p:outputLabel   value="#{lector.TIPPER}"/>
+                        </p:column>
+                        <f:facet name="header">
+                            <p:commandButton icon="fa fa-plus" value="Nuevo Lector" onclick="PF('dlgNewLector').show();" actionListener="#{lectorC.limpiar()}" class="secondary-btn"/>
+                        </f:facet>
+                    </p:dataTable>
+                    <p:contextMenu for="tblLector">
+                        <p:menuitem icon="fa fa-edit" value="Modificar"   onclick="PF('dlgModLector').show();" update="FormModLector"/>
+                        <p:menuitem icon="fa fa-trash" value="Eliminar" actionListener="#{lectorC.eliminar()}"  update="tblLector">
+                            <p:confirm header="Confirmación"   message="¿Estás seguro de Eliminar?" icon="ui-icon-alert"/>
+                        </p:menuitem>
+                    </p:contextMenu>
+                </h:form>
+
+                <h:form>
+                    <p:confirmDialog global="true">
+                        <p:commandButton value="Si" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                        <p:commandButton value="No" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+                    </p:confirmDialog>
+                </h:form>
+                <p:dialog  id="dialogo" header="Actualizar Datos" widgetVar="dlgModLector" resizable="false"  modal="true">
+                    <h:form id="FormModLector">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Nombres:"/>
+                            <p:inputText value="#{lectorC.selectedLector.NOMLEC}" placeholder="Nombres" maxlength="30">
+                                <p:keyFilter regEx="/[a-z_ á_é_í_ó_ú]/i"/>
+                            </p:inputText>
+                            <p:outputLabel value="Apellidos:"/>
+                            <p:inputText value="#{lectorC.selectedLector.APELEC}" placeholder="Apellidos" maxlength="30">
+                                <p:keyFilter regEx="/[a-z_ á_é_í_ó_ú]/i"/>
+                            </p:inputText>
+                            <p:outputLabel value="Dirección:"/>
+                            <p:inputText value="#{lectorC.selectedLector.DIRLEC}" placeholder="Dirección" maxlength="30"/>
+                            <p:outputLabel value="Teléfono:"/>
+                            <p:inputText value="#{lectorC.selectedLector.TELFLEC}" placeholder="Teléfono" maxlength="9">
+                                <p:keyFilter regEx="/[\d]/"/>
+                            </p:inputText>
+                            <p:outputLabel value="Tipo:"/>
+                            <p:selectOneMenu value="#{lectorC.selectedLector.TIPPER}" >
+                                <f:selectItem itemLabel="Seleccione" itemDisabled="true" itemValue="#{null}"/>
+                                <f:selectItem itemLabel="Profesor" itemValue="PR"/>
+                                <f:selectItem itemLabel="Estudiante" itemValue="ES"/>
+                            </p:selectOneMenu>
+                        </p:panelGrid>
+                        <p:commandButton icon="fa fa-edit" value="Modificar" actionListener="#{lectorC.modificar()}" update=":FormTblLector:tblLector"  onclick="PF('dlgModLector').hide();"/>
+                        <p:commandButton icon="fa fa-close" value="Cancelar"  onclick="PF('dlgModLector').hide();"/>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dlg" header="Agregar Lector"  widgetVar="dlgNewLector" resizable="false" modal="true">
+                    <h:form id="FormLector"> 
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Nombres:"/>
+                            <p:inputText value="#{lectorC.lector.NOMLEC}" placeholder="Nombres" maxlength="30" required="#{not empty param[registrar.clientId]}" requiredMessage="INGRESE EL NOMBRE">
+                                <p:keyFilter regEx="/[a-z_ á_é_í_ó_ú]/i"/>
+                            </p:inputText>
+                            <p:outputLabel value="Apellidos:"/>
+                            <p:inputText value="#{lectorC.lector.APELEC}" placeholder="Apellidos" maxlength="30" required="#{not empty param[registrar.clientId]}" requiredMessage="INGRESE EL APELLIDO">
+                                <p:keyFilter regEx="/[a-z_ á_é_í_ó_ú]/i"/>
+                            </p:inputText>
+                            <p:outputLabel value="Dni:"/>
+                            <p:inputText value="#{lectorC.lector.DNILEC}" placeholder="Dni" maxlength="8" required="#{not empty param[registrar.clientId]}" requiredMessage="INGRESE EL DNI">
+                                <p:keyFilter regEx="/[\d]/"/>
+                            </p:inputText>
+                            <p:outputLabel value="Dirección:"/>
+                            <p:inputText value="#{lectorC.lector.DIRLEC}" placeholder="Dirección" maxlength="30" required="#{not empty param[registrar.clientId]}" requiredMessage="INGRESE LA DIRECCIÓN"/>
+                            <p:outputLabel  value="Teléfono:"/>
+                            <p:inputText value="#{lectorC.lector.TELFLEC}" placeholder="Teléfono" maxlength="9" required="#{not empty param[registrar.clientId]}" requiredMessage="INGRESE EL teléfono">
+                                <p:keyFilter regEx="/[\d]/"/>
+                            </p:inputText>
+                            <p:outputLabel value="Email:"/>
+                            <p:inputText value="#{lectorC.lector.EMALEC}" placeholder="Email" maxlength="30"/>
+                            <p:outputLabel value="Password:"/>
+                            <p:password value="#{lectorC.lector.PASLEC}" placeholder="Password" maxlength="20" required="#{not empty param[registrar.clientId]}" requiredMessage="INGRESE EL PASSWORD"/>
+                            <p:outputLabel value="Tipo:"/>
+                            <p:selectOneMenu value="#{lectorC.lector.TIPPER}" required="#{not empty param[registrar.clientId]}" requiredMessage="SELECCIONE EL TIPO">
+                                <f:selectItem itemLabel="Seleccione" itemDisabled="true" itemValue="#{null}"/>
+                                <f:selectItem itemLabel="Profesor" itemValue="PR"/>
+                                <f:selectItem itemLabel="Estudiante" itemValue="ES"/>
+                            </p:selectOneMenu>
+                        </p:panelGrid>
+                        <p:commandButton binding="#{registrar}" icon="fa fa-save" value="Guardar" actionListener="#{lectorC.guardar()}"  update="FormLector :FormTblLector:tblLector"/>
+                        <p:commandButton icon="fa fa-close" value="Cancelar" actionListener="#{lectorC.limpiar()}" update="FormLector" onclick="PF('dlgNewLector').hide();"/>
+                    </h:form>
+                </p:dialog>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

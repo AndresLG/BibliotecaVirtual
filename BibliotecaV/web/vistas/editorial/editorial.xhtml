@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+        <ui:composition template="./../template/template.xhtml">
+            <ui:define name="content">
+
+                <h:form id="FormTableEditorial">
+                    <p:growl id="msg" life="1500" autoUpdate="true"/>
+                    <p:dataTable id="tblEditorial"  
+                                 value="#{editorialC.lstEditorial}"
+                                 var="editorial"
+                                 selectionMode="single"
+                                 selection="#{editorialC.selectedEditorial}"
+                                 rowKey="#{editorial.CODEDIT}">           
+                        <f:facet name="header">
+                            <p:commandButton value="Nuevo Editorial" onclick="PF('dlgNewEditorial').show();" actionListener="#{editorialC.limpiar()}" icon="fa fa-plus" class="secondary-btn"/>
+                        </f:facet>
+                        <p:column headerText="EDITORIAL">
+                            <p:outputLabel  value="#{editorial.NOMEDIT}"/>
+                        </p:column>
+                    </p:dataTable>
+                    <p:contextMenu for="tblEditorial">
+                        <p:menuitem value="Modificar" onclick="PF('dlgModEditorial').show();" update="FormModEditorial" icon="fa fa-edit"/>
+                        <p:menuitem value="Eliminar" actionListener="#{editorialC.eliminar()}"  update="tblEditorial" icon="fa fa-trash">
+                            <p:confirm header="Confirmación"   message="¿Estás seguro de Eliminar?" icon="ui-icon-alert"/>
+                        </p:menuitem>
+                    </p:contextMenu>           
+                </h:form>
+
+                <h:form>
+                    <p:confirmDialog global="true">
+                        <p:commandButton value="Si" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                        <p:commandButton value="No" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+                    </p:confirmDialog>
+                </h:form>
+
+
+                <p:dialog  id="dialogo" header="Actualizar Datos" widgetVar="dlgModEditorial" resizable="false"  modal="true">
+                    <h:form id="FormModEditorial">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel  value="Nombre:"/>
+                            <p:inputText value="#{editorialC.selectedEditorial.NOMEDIT}" placeholder="Editorial" maxlength="40" style="width: 400px">
+                                <p:keyFilter regEx="/[a-z_ á_é_í_ó_ú]/i"/>
+                            </p:inputText>
+                        </p:panelGrid>
+                        <p:commandButton icon="fa fa-edit" value="Modificar" actionListener="#{editorialC.modificar()}" update=":FormTableEditorial:tblEditorial"  onclick="PF('dlgModEditorial').hide();"/>
+                        <p:commandButton icon="fa fa-times" value="Cancelar"  onclick="PF('dlgModEditorial').hide();"/>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog id="dlg" header="Agregar Editorial"  widgetVar="dlgNewEditorial" resizable="false" modal="true">
+                    <h:form id="FormEditorial"> 
+                        <p:panelGrid   columns="2">
+                            <p:outputLabel  value="Nombre:"/>
+                            <p:inputText value="#{editorialC.editorial.NOMEDIT}" placeholder="Editorial" maxlength="35" style="width: 400px" required="#{not empty param[registrar.clientId]}" requiredMessage="INGRESE EL EDITORIAL">
+                                <p:keyFilter regEx="/[a-z_ á_é_í_ó_ú]/i"/>
+                            </p:inputText>
+                        </p:panelGrid>
+                        <p:commandButton binding="#{registrar}" icon="fa fa-save" value="Guardar" actionListener="#{editorialC.guardar()}"  update="FormEditorial :FormTableEditorial:tblEditorial"/>
+                        <p:commandButton icon="fa fa-times" value="Cancelar" actionListener="#{editorialC.limpiar()}" update="FormEditorial" onclick="PF('dlgNewEditorial').hide();"/>
+                    </h:form>
+                </p:dialog>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

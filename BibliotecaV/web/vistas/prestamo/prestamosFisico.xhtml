@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:body>
+        <ui:composition template="./../template/template.xhtml">
+            <ui:define name="content">
+                <h:form id="FormConsulta">
+                    <p:panelGrid>
+                        <!--                <p:inputText value="" placeholder="Título Libro"/>
+                                        <p:inputText value="" placeholder="Nombre Autor"/>
+                                        <p:inputText value="" placeholder="Apellido Autor"/>
+                                        <p:inputText value="" placeholder="Género"/>
+                                        <p:inputText value="" placeholder="Editorial"/>-->
+                        <p:autoComplete dropdown="true" maxResults="10"
+                                        emptyMessage="No se encontró ningún registro"
+                                        forceSelection="true"
+                                        placeholder="Buscar por Libro"
+                                        value="#{libroC.titulo}"
+                                        completeMethod="#{libroC.completeTextLibro}"
+                                        style="width: 90%" id="autoCompleteLibro" maxlength="15"/>
+                        <p:autoComplete dropdown="true" maxResults="10"
+                                        emptyMessage="No se encontró ningún registro"
+                                        forceSelection="true"
+                                        placeholder="Buscar por Autor"
+                                        value="#{libroC.autor}"
+                                        completeMethod="#{autorC.completeTextAutor}"
+                                        style="width: 90%" id="autoCompleteAutor" maxlength="15"/>
+                    </p:panelGrid>
+                    <br/>
+                    <p:commandButton value="Consultar" actionListener="#{libroC.consultar()}" update="tblConsulta"/>
+
+                    <p:dataTable value="#{libroC.lstConsulta}"
+                                 id="tblConsulta"
+                                 var="consulta"
+                                 emptyMessage="Sin resultados">
+                        <p:column headerText="IMAGEN">
+                            <center><img src="../Images/book.png" alt="" width="150px" align="center"/></center>
+                        </p:column>
+                        <p:column headerText="DATOS">
+                            <p:outputLabel value="Titulo: #{consulta.TITLIB} / #{consulta.NOMAUT} #{consulta.APEAUT}"/>
+                            <br/>
+                            <br/>
+                            <p:outputLabel value="Publicado: (#{consulta.FECPUBLIB})"/>
+                            <br/>
+                            <br/>
+                            <p:outputLabel value="Editorial: #{consulta.NOMEDIT}"/>
+                            <br/>
+                            <br/>
+                            <p:outputLabel value="#Paginas: #{consulta.PAGLIB}pag. "/> &nbsp;
+                            <p:outputLabel value="Tamaño: #{consulta.TAMLIB} "/> &nbsp;
+                        </p:column>
+                        <p:column headerText="Ubicacion">
+                            <p:outputLabel value="Anquel: #{consulta.NOMANQ}"/>
+                            <br/>
+                            <p:outputLabel value="Columna: #{consulta.COLANQ}"/>
+                            <br/>
+                            <p:outputLabel value="Fila: #{consulta.FILANQ}"/>
+                       
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

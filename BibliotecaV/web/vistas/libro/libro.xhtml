@@ -1,0 +1,178 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:body>
+        <ui:composition template="./../template/template.xhtml">
+            <ui:define name="content">
+                <h:form id="FormTblLibro">
+                    <p:growl id="msg" autoUpdate="true" life="1500"/>
+                    <p:dataTable id="tblLibro"
+                                 value="#{libroC.lstlibro}"
+                                 var="libro"
+                                 selectionMode="single"
+                                 selection="#{libroC.libro}"
+                                 rowKey="#{libro.CODLIB}">
+                        <f:facet name="header">
+                            <p:commandButton value="Nuevo Libro" onclick="PF('dlgNewLibro').show()" class="secondary-btn" icon="fa fa-plus"/>
+                            <center>
+                                <h:commandLink actionListener="#{prestamoC.descargarPdfLibros()}">
+                                    <p:graphicImage url="../../resources/images/pdf.png" width="60"/>
+                                    <br/>
+                                    <span style="color: black">REPORTE DE LIBRO</span>
+                                </h:commandLink>
+                            </center>
+                        </f:facet>
+                        <p:column headerText="Imagen">
+                            <center><img src="../../Images/book.png" alt="" width="150px" align="center"/></center>
+                        </p:column>
+                        <p:column headerText="Datos">
+                            <br/>
+                            <p:outputLabel value="ISBN: #{libro.ISBNLIB}"/>
+                            <br/>
+                            <br/>
+                            <p:outputLabel style="color: orangered; font-weight: bold;"  value="Título: #{libro.TITLIB} / #{libro.NOMBREAUT}"/>
+                            <br/>
+                            <br/>
+                            <p:outputLabel value="Publicado: (#{libro.FECPUBLIB})"/>
+                            <br/>
+                            <br/>
+                            <p:outputLabel value="Editorial: #{libro.NOMBREEDIT}"/>
+                            <br/>
+                            <br/>
+                            <p:outputLabel value="#Páginas: #{libro.PAGLIB}pag. "/>
+                            <p:outputLabel value="Tamaño: #{libro.TAMLIB} "/>
+                            <br/>
+                            <br/>
+                            <p:outputLabel value="Ubicación: #{libro.NOMBREANQ}"/>
+                            <br/>
+                            <br/>
+                            <p:outputLabel style="font-weight: bold;" value="Estado: #{libro.ESTLIB}"/>
+                        </p:column>
+                    </p:dataTable>
+                    <p:contextMenu for="tblLibro" rendered="#{personaC.persona.TIPPER == 'AD'}">
+                        <p:menuitem icon="fa fa-edit" value="Modificar" onclick="PF('dlgModLibro').show();" update="FormModLibro"/>
+                    </p:contextMenu>
+                </h:form>
+
+                <p:dialog header="Agregar Libro" widgetVar="dlgNewLibro" resizable="false" modal="true">
+                    <h:form id="FormLibro">
+                        <h:panelGrid columns="2" styleClass="ui-panelgrid-blank">
+                            <p:outputLabel value="ISBN:"/>
+                            <p:inputText value="#{libroC.libro.ISBNLIB}" placeholder="ISBN" maxlength="13" required="#{not empty param[registrar.clientId]}" requiredMessage="INGRESE EL ISBN">
+                                <p:keyFilter regEx="/[\d]/"/>
+                            </p:inputText>
+                            <p:outputLabel value="Título:"/>
+                            <p:inputText value="#{libroC.libro.TITLIB}" placeholder="Título" maxlength="50" style="width: 420px" required="#{not empty param[registrar.clientId]}" requiredMessage="INGRESE EL TÍTULO"/>
+                            <p:outputLabel value="FechaPublicación: (DD/MM/YYYY)"/>
+                            <p:inputMask value="#{libroC.libro.FECPUBLIB}" placeholder="fechaPublicación" mask="99/99/9999" required="#{not empty param[registrar.clientId]}" requiredMessage="INGRESE LA FECHA DE PUBLICACIÓN"/>
+                            <p:outputLabel value="Autor:"/>
+                            <p:selectOneMenu value="#{libroC.libro.CODAUT}" required="#{not empty param[registrar.clientId]}" requiredMessage="SELECCIONE EL AUTOR">
+                                <f:selectItem itemLabel="Seleccione" itemDisabled="true" itemValue="#{null}" />
+                                <f:selectItems value="#{autorC.lstAutor}" var="autor" itemLabel="#{autor.NOMAUT} #{autor.APEAUT}" itemValue="#{autor.CODAUT}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Género:"/>
+                            <p:selectOneMenu value="#{libroC.libro.CODGEN}" required="#{not empty param[registrar.clientId]}" requiredMessage="SELECCIONE EL GÉNERO">
+                                <f:selectItem itemLabel="Seleccione" itemDisabled="true" itemValue="#{null}" />
+                                <f:selectItems value="#{generoC.lstGenero}" var="genero" itemLabel="#{genero.NOMGEN}" itemValue="#{genero.CODGEN}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Editorial:"/>
+                            <p:selectOneMenu value="#{libroC.libro.CODEDIT}" required="#{not empty param[registrar.clientId]}" requiredMessage="SELECCIONE EL EDITORIAL">
+                                <f:selectItem itemLabel="Seleccione" itemDisabled="true" itemValue="#{null}" />
+                                <f:selectItems value="#{editorialC.lstEditorial}" var="editorial" itemLabel="#{editorial.NOMEDIT}" itemValue="#{editorial.CODEDIT}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel value="NumeroPáginas:"/>
+                            <p:inputText value="#{libroC.libro.PAGLIB}" placeholder="NumeroPáginas" maxlength="4" required="#{not empty param[registrar.clientId]}" requiredMessage="INGRESE EL NÚMERO DE PÁGINAS">
+                                <p:keyFilter regEx="/[\d]/"/>
+                            </p:inputText>
+                            <p:outputLabel value="Descripción:"/>
+                            <p:inputTextarea value="#{libroC.libro.DESCLIB}" placeholder="Descripción" maxlength="300" style="width: 400px" required="#{not empty param[registrar.clientId]}" requiredMessage="INGRESE LA DESCRIPCIÓN"/>
+                            <p:outputLabel value="Desc.Física:"/>
+                            <p:inputMask value="#{libroC.libro.TAMLIB}" placeholder="Desc.Física" mask="99aa" required="#{not empty param[registrar.clientId]}" requiredMessage="INGRESE LA DESC. FÍSICA"/>
+                            <p:outputLabel value="Tipo:"/>
+                            <p:selectOneMenu value="#{libroC.libro.CODTIPOLIB}" required="#{not empty param[registrar.clientId]}" requiredMessage="SELECCIONE EL TIPO">
+                                <f:selectItem itemLabel="Seleccione" itemDisabled="true" itemValue="#{null}" />
+                                <f:selectItems value="#{tipoLibroC.lstTipoLibro}" var="tlibro" itemLabel="#{tlibro.NOMTIPOLIB}" itemValue="#{tlibro.CODTIPOLIB}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Ubicación:"/>
+                            <p:selectOneMenu value="#{libroC.libro.CODANQ}" required="#{not empty param[registrar.clientId]}" requiredMessage="SELECCIONE EL ANAQUEL">
+                                <f:selectItem itemLabel="Seleccione" itemDisabled="true" itemValue="#{null}" />
+                                <f:selectItems value="#{anaquelC.lstAnaquel}" var="anaquel" itemLabel="#{anaquel.NOMANQ}" itemValue="#{anaquel.CODANQ}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel  value="Columna:"/>
+                            <p:selectOneMenu  value="#{libroC.libro.CODANQ}" required="#{not empty param[registrar.clientId]}" requiredMessage="SELECCIONE LA COLUMNA">
+                                <f:selectItem itemLabel="Seleccione" itemDisabled="true" itemValue="#{null}"/>
+                                <f:selectItems value="#{anaquelC.lstAnaquel}"  var="columna" itemLabel="#{columna.COLANQ}" itemValue="#{anaquel.CODANQ}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel  value="Fila:"/>
+                            <p:selectOneMenu  value="#{libroC.libro.CODANQ}" required="#{not empty param[registrar.clientId]}" requiredMessage="SELECCIONE LA FILA">
+                                <f:selectItem itemLabel="Seleccione" itemDisabled="true" itemValue="#{null}"/>
+                                <f:selectItems value="#{anaquelC.lstAnaquel}"  var="columna1" itemLabel="#{columna1.FILANQ}" itemValue="#{columna1.CODANQ}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Estado:" />
+                            <p:selectOneMenu value="#{libroC.libro.ESTLIB}" required="#{not empty param[registrar.clientId]}" requiredMessage="SELECCIONE EL ESTADO">
+                                <f:selectItem itemLabel="Seleccione" itemDisabled="true" itemValue="#{null}"/>
+                                <f:selectItem itemLabel="Disponible" itemValue="A"/>
+                                <f:selectItem itemLabel="No Disponible" itemValue="I"/>
+                            </p:selectOneMenu>
+                            <p:commandButton  binding="#{registrar}" value="Registrar" actionListener="#{libroC.guardar}" update=":FormTblLibro:tblLibro FormLibro" onclick="PF('dlgNewLibro').hide()" icon="fa fa-save"/>
+                            <p:commandButton value="Cancelar" onclick="PF('dlgNewLibro').hide()" icon="fa fa-close"/>
+                        </h:panelGrid>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog header="Modificar Libro" widgetVar="dlgModLibro" resizable="false" modal="true">
+                    <h:form id="FormModLibro">
+                        <h:panelGrid columns="2" styleClass="ui-panelgrid-blank">
+                            <p:outputLabel value="ISBN:"/>
+                            <p:inputText value="#{libroC.libro.ISBNLIB}" placeholder="ISBN" maxlength="13">
+                                <p:keyFilter regEx="/[\d]/"/>
+                            </p:inputText>
+                            <p:outputLabel value="Título:"/>
+                            <p:inputText value="#{libroC.libro.TITLIB}" placeholder="Título" maxlength="50" style="width: 420px"/>
+                            <p:outputLabel value="FechaPublicación: (Año)"/>
+                            <p:inputMask value="#{libroC.libro.FECPUBLIB}" placeholder="fechaPublicación" mask="9999"/>
+                            <p:outputLabel value="Autor:"/>
+                            <p:selectOneMenu value="#{libroC.libro.CODAUT}">
+                                <f:selectItem itemLabel="Seleccione" itemDisabled="true" itemValue="#{null}" />
+                                <f:selectItems value="#{autorC.lstAutor}" var="autor" itemLabel="#{autor.NOMAUT} #{autor.APEAUT}" itemValue="#{autor.CODAUT}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Género:"/>
+                            <p:selectOneMenu value="#{libroC.libro.CODGEN}">
+                                <f:selectItem itemLabel="Seleccione" itemDisabled="true" itemValue="#{null}" />
+                                <f:selectItems value="#{generoC.lstGenero}" var="genero" itemLabel="#{genero.NOMGEN}" itemValue="#{genero.CODGEN}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Editorial:"/>
+                            <p:selectOneMenu value="#{libroC.libro.CODEDIT}">
+                                <f:selectItem itemLabel="Seleccione" itemDisabled="true" itemValue="#{null}" />
+                                <f:selectItems value="#{editorialC.lstEditorial}" var="editorial" itemLabel="#{editorial.NOMEDIT}" itemValue="#{editorial.CODEDIT}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel value="NumeroPáginas:"/>
+                            <p:inputText value="#{libroC.libro.PAGLIB}" placeholder="NumeroPáginas" maxlength="4">
+                                <p:keyFilter regEx="/[\d]/"/>
+                            </p:inputText>
+                            <p:outputLabel value="Descripción:"/>
+                            <p:inputTextarea value="#{libroC.libro.DESCLIB}" placeholder="Descripción" maxlength="300" style="width: 400px"/>
+                            <p:outputLabel value="Desc.Física:"/>
+                            <p:inputMask value="#{libroC.libro.TAMLIB}" placeholder="Desc.Física" mask="99aa"/>
+                            <p:outputLabel value="Estado:" />
+                            <p:selectOneMenu value="#{libroC.libro.ESTLIB}">
+                                <f:selectItem itemLabel="Seleccione" itemDisabled="true" itemValue="#{null}"/>
+                                <f:selectItem itemLabel="Disponible" itemValue="A"/>
+                                <f:selectItem itemLabel="No Disponible" itemValue="I"/>
+                            </p:selectOneMenu>
+                            <p:commandButton value="Actualizar" actionListener="#{libroC.modificar()}" update=":FormTblLibro:tblLibro" oncomplete="PF('dlgModLibro').hide()" icon="fa fa-save"/>
+                            <p:commandButton value="cancelar" onclick="PF('dlgModLibro').hide()" icon="fa fa-close"/>
+                        </h:panelGrid>
+                    </h:form>
+                </p:dialog>
+
+
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

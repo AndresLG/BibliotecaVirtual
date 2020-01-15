@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <body>
+        <ui:composition template="./../template/template.xhtml">
+            <ui:define name="content">
+                <h:form id="FormTblTipoLibro">
+                    <p:dataTable id="tblTipoLibro"
+                                 value="#{tipoLibroC.lstTipoLibro}"
+                                 var="tipoLibro"
+                                 selection="#{tipoLibroC.selectedTipoLibro}"
+                                 selectionMode="single"
+                                 rowKey="#{tipoLibro.CODTIPOLIB}">
+                        <f:facet name="header">
+                            <p:commandButton value="Nuevo Tipo de Libro" onclick="PF('dlgNewTipo').show();" icon="fa fa-plus" class="secondary-btn"/>
+                        </f:facet>
+                        <p:column headerText="TIPO DE LIBRO">
+                            <p:outputLabel value="#{tipoLibro.NOMTIPOLIB}"/>
+                        </p:column>
+                    </p:dataTable>
+                    <p:contextMenu for="tblTipoLibro">
+                        <p:menuitem icon="fa fa-edit" value="Modificar" onclick="PF('dlgModTipoLibro').show();" update="FormDialog"/>
+                        <p:menuitem icon="fa fa-trash" value="Eliminar" actionListener="#{tipoLibroC.eliminar()}" update="tblTipoLibro">
+                            <p:confirm header="Confirmacion" message="Estás seguro de eliminar" icon="ui-icon-alert"/>
+                        </p:menuitem>
+                    </p:contextMenu>
+                </h:form>
+
+                <h:form>
+                    <p:confirmDialog global="true">
+                        <p:commandButton value="Si" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                        <p:commandButton value="No" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+                    </p:confirmDialog>
+                </h:form>
+
+
+                <p:dialog id="dlg" header="Actualizar Datos" widgetVar="dlgModTipoLibro" resizable="false"  modal="true">
+                    <h:form id="FormDialog">
+                        <p:panelGrid  columns="2">
+                            <p:outputLabel  value="Nombre:"/>
+                            <p:inputText  value="#{tipoLibroC.selectedTipoLibro.NOMTIPOLIB}" placeholder="Tipo de Libro" maxlength="30" style="width: 250px">
+                                <p:keyFilter regEx="/[a-z_ á_é_í_ó_ú]/i"/>
+                            </p:inputText>
+                        </p:panelGrid>
+                        <p:commandButton value="Modificar" actionListener="#{tipoLibroC.modificar()}" update=":FormTblTipoLibro:tblTipoLibro"  onclick="PF('dlgModTipoLibro').hide();" icon="fa fa-edit"/>
+                         <p:commandButton icon="fa fa-close" value="Cancelar"  onclick="PF('dlgModTipoLibro').hide();"/>
+                    </h:form>
+                </p:dialog>
+                
+                <p:dialog id="dlgNewTipo" header="Agregar Tipo de Libro" widgetVar="dlgNewTipo" resizable="false" modal="true">
+                <h:form id="FormTipoLibro">
+                    <p:growl id="msg" life="1500" autoUpdate="true"/>
+                    <p:panelGrid columns="2">
+                        <p:outputLabel value="Tipo de Libro:"/>
+                        <p:inputText value="#{tipoLibroC.tipoLibro.NOMTIPOLIB}" placeholder="Tipo de Libro" required="#{not empty param[registrar.clientId]}" requiredMessage="Ingrese el Tipo de Libro" maxlength="30" style="width: 250px">
+                                <p:keyFilter regEx="/[a-z_ á_é_í_ó_ú]/i"/>
+                            </p:inputText>
+                        <p:commandButton binding="#{registrar}" value="Registrar" actionListener="#{tipoLibroC.guardar()}" update="FormTipoLibro :FormTblTipoLibro:tblTipoLibro" icon="fa fa-save"/>
+                        <p:commandButton value="Cancelar" onclick="PF('dlgNewTipo').hide()" icon="fa fa-close"/>
+                    </p:panelGrid>
+                </h:form>
+                </p:dialog>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>
